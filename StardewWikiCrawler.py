@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, re
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://stardewvalleywiki.com"
@@ -69,43 +69,87 @@ def obtener_datos_cultivo(url):
 
     # INTENTO DE PRECIO VENTA Y PRECIO COMPRA SEMILLAS
 
-    """
     # Precio de venta
-    precio_venta_row = soup.find("td", {"id": "infoboxsection"}, string="Base")
+    precio_venta_row = soup.find("td", {"style": "padding: 0; border: 0;", "colspan": "2"})
     if precio_venta_row:
-        precio_venta = precio_venta_row.find_next("td").text.strip()
-        datos["precio_venta"] = precio_venta.split()[0]  # Captura solo el número y la unidad (por ejemplo, "250g")
+        # Si encontramos el precio en el primer caso, buscamos la tabla interna
+        table_info = precio_venta_row.find("table", {"class": "no-wrap", "style": "text-align: left; margin: 0; padding: 0; border-spacing: 0; border: 0;"})
+        
+        if table_info:
+            # Intentamos extraer el precio de la tabla
+            precio_venta = table_info.find_next("tbody")
+            if precio_venta:
+                # Si encontramos el cuerpo, extraemos y asignamos el precio
+                datos["precio_venta"] = precio_venta.text.strip().split()[0]
+            else:
+                datos["precio_venta"] = "N/A"
+        else:
+            datos["precio_venta"] = "N/A"
     else:
-        datos["precio_venta"] = "N/A"
+        # Si no encontramos el precio de la primera forma, intentamos buscarlo en otro lugar
+        sell_price_td = soup.find("td", string="Sell Price")
+        if sell_price_td:
+            price_table = sell_price_td.find_next("td")
+            
+            if price_table:
+                # Buscamos la tabla donde puede estar el precio
+                body = price_table.find("tbody")
+                if body:
+                    # Obtenemos la primera fila de la tabla
+                    first_tr = body.find("tr")
+                    if first_tr:
+                        td_elements = first_tr.find_all("td")
+                        if len(td_elements) > 1:
+                            price = td_elements[1].get_text(strip=True)
+                            datos["precio_venta"] = price
+        else:
+            datos["precio_venta"] = "N/A"
 
+ 
     # Precio de compra (Enlace a las semillas)
-    semilla_link = soup.find("td", {"id": "infoboxdetail"}).find("a", href=True)
-    if semilla_link:
-        datos.update(obtener_datos_semillas(semilla_link['href']))
+    seedrow = soup.find("td", {"id": "infoboxsection"}, string="Seed")
+    if seedrow:
+        seed_cell = seedrow.find_next_sibling("td", {"id": "infoboxdetail"})
+        seed_link = seed_cell.find("a", href=True) if seed_cell else None
+        if seed_link:
+            datos["precio_semillas"] = obtener_datos_semillas(seed_link['href'])
+        else:
+            datos["precio_semillas"] = "N/A"
     else:
-        datos["precio_compra"] = "N/A"
-    """
-
+        datos["precio_semillas"] = "N/A"
     return datos
 
 def obtener_datos_semillas(url):
     """
     Extrae el precio de compra de las semillas desde su página específica.
+    Valida que el precio sea un número seguido de 'g' para evitar errores.
     """
     response = requests.get(f"{BASE_URL}{url}")
     soup = BeautifulSoup(response.content, "html.parser")
 
-    # Buscar todos los spans que contengan el precio dentro de la clase "no-wrap"
-    precios = soup.find("span", "style", "display: none;")
-    precio_compra = precios.text.strip() if precios else "N/A"
+    # Buscar todas las celdas con clase "no-wrap"
+    precios = soup.find_all("span", class_="no-wrap")
+    if len(precios) > 1:  # Verificar si hay al menos dos precios
+        precio = precios[1].text.strip()
 
-    # Retornar el primero si existe, o "N/A" si no se encuentra
-    return precio_compra
+        # Validar formato del precio (número seguido de 'g')
+        if re.match(r"^\d+g$", precio):
+            return precio
+        else:
+            return "N/A"
+    elif precios:
+        # Validar el primero si no hay suficientes elementos
+        precio = precios[0].text.strip()
+        if re.match(r"^\d+g$", precio):
+            return precio
+        else:
+            return "N/A"
+    return "N/A"
 
 def main():
     cultivos = obtener_enlaces_cultivos(START_URL)
     datos_cultivos = []
-    
+
     print("Cultivos encontrados:")
     for cultivo in cultivos:
         print(f"- {cultivo['nombre']}: {BASE_URL}{cultivo['enlace']}")
