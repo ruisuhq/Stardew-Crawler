@@ -39,11 +39,11 @@ def obtener_datos_cultivo(url):
         "descripcion": "The flower grows in a sphere to invite as many butterflies as possible.",
         "temporada": "Spring",
         "tiempo_crecer": "7 days",
-        "precio_venta": "Tiller",
-        "precio_compra": "N/A"
+        "cantidad_cosechable": "1",
+        "Recrecimiento": "0",
+        "precio_venta": "50g",
+        "precio_semillas": "30g"
         },
-
-    NOTA: Hay error en el precio de venta base y precio de compra de semilla de Pierre, WIP    
 
     """
 
@@ -55,8 +55,10 @@ def obtener_datos_cultivo(url):
 
     data["name"] = crop.get_name(soup)
     data["description"] = crop.get_description(soup)
-    data["growth_time"] = crop.get_growth_time(soup)
     data["season"] = crop.get_season(soup)
+    data["growth_time"] = crop.get_growth_time(soup)
+    data["harvest_quantity"] = crop.get_harvest_quantity(soup)
+    data["regrowth_days"] = crop.get_regrowth_days(soup)
     data["sell_price"] = crop.get_sell_price(soup)
     data["price_seed"] = crop.get_price_seed(get_link_seeds(soup))
     
@@ -71,7 +73,6 @@ def get_link_seeds(soup):
         return "N/A"
 
     return seed_link['href']
-
 
 def exportJson(datos_cultivos):
     with open("cultivos.json", "w", encoding="utf-8") as f:
@@ -89,7 +90,8 @@ def main():
             datos_cultivo = obtener_datos_cultivo(cultivo["enlace"])
             datos_cultivos.append(datos_cultivo)
         except Exception as e:
-            print(f"Error procesando {cultivo['nombre']}: {e}")
+            # Me da tok ver que hay errores q no son errores mb 
+            # print(f"Error procesando {cultivo['nombre']}: {e}")
             datos_cultivos.append({"nombre": cultivo['nombre'], "error": str(e)})
         
     # Exportar los datos como JSON
