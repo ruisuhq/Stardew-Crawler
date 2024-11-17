@@ -1,96 +1,97 @@
 import json
 
-def cargar_cultivos(ruta):
-    with open(ruta, 'r', encoding='utf-8') as archivo:
-        return json.load(archivo)
+def load_crops(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return json.load(file)
 
-cultivos = cargar_cultivos('cultivos.json')
+crops = load_crops('cultivos.json')
 
-def filtrar_cultivos(temporada, dias_restantes):
-    disponibles = []
-    for cultivo in cultivos:
-        tiempo_crecer_raw = cultivo["tiempo_crecer"]
+def filter_crops(season, remaining_days):
+    available = []
+    for crop in crops:
+        # Usa .get para manejar claves faltantes con un valor predeterminado
+        regrowth_days = crop.get("regrowth_days", "0")  # Predeterminado a "0"
         
-        # Manejar casos donde tiempo_crecer es "N/A" u otros valores no numéricos
-        if tiempo_crecer_raw.lower() == "n/a":
-            continue  # Ignorar cultivos no válidos para sembrar
+        # Manejar casos donde regrowth_days no es un número válido
+        if regrowth_days.lower() == "n/a":
+            continue  # Ignorar cultivos no válidos para plantar
         
-        tiempo_crecer = int(tiempo_crecer_raw.split()[0])  # Convertir "7 days" -> 7
+        regrowth_time = int(regrowth_days) if regrowth_days.isdigit() else 0  # Convertir a entero
         
-        if cultivo["temporada"].lower() == temporada.lower() and tiempo_crecer <= dias_restantes:
-            disponibles.append(cultivo)
+        if crop.get("season", "").lower() == season.lower() and regrowth_time <= remaining_days:
+            available.append(crop)
     
     # Ordenar cultivos disponibles por precio de venta (de mayor a menor)
-    cultivos_ordenados = sorted(
-        disponibles,
-        key=lambda x: int(x["precio_venta"].replace("g", "").strip()),
+    sorted_crops = sorted(
+        available,
+        key=lambda x: int(x.get("sell_price", "0").replace("g", "").strip()),
         reverse=True  # Orden descendente
     )
     
-    return cultivos_ordenados
+    return sorted_crops
 
-def mostrar_cultivos(disponibles):
-    print("\nCultivos disponibles:")
-    for i, cultivo in enumerate(disponibles, start=1):
-        print(f"{i}. {cultivo['nombre']} - Precio Semillas: {cultivo['precio_semillas']} - Precio Venta: {cultivo['precio_venta']} - Días para crecer: {cultivo['tiempo_crecer']}")
+def display_crops(available):
+    print("\nAvailable crops:")
+    for i, crop in enumerate(available, start=1):
+        print(f"{i}. {crop['name']} - Seed Price: {crop['price_seed']} - Sell Price: {crop['sell_price']} - Growth Time: {crop['growth_time']}")
 
-def calcular_costos_y_ganancias(cultivo, casillas, dias_restantes):
-    # Convertir los precios de texto a números
-    precio_semillas = int(cultivo["precio_semillas"].replace("g", "").strip())
-    precio_venta = int(cultivo["precio_venta"].replace("g", "").strip())
+def calculate_costs_and_profits(crop, tiles, remaining_days):
+    # Convert prices from text to numbers
+    seed_price = int(crop["price_seed"].replace("g", "").strip()) if crop["price_seed"] != "N/A" else 0
+    sell_price = int(crop["sell_price"].replace("g", "").strip())
     
-    # Obtener la cantidad cosechable
-    cantidad_cosechable = int(cultivo["cantidad_cosechable"])
+    # Get harvest quantity
+    harvest_quantity = int(crop["harvest_quantity"])
     
-    #Días restantes después de la primera cosecha
-    dias = dias_restantes - int(cultivo["tiempo_crecer"].split()[0])
+    # Days remaining after the first harvest
+    days = remaining_days - int(crop["growth_time"].split()[0])
 
-    #Veces totales que volvió a crecer y cosecharse el cultivo
-    Recrecimientos = 1 + (dias // int(cultivo["Recrecimiento"]))
+    # Total times the crop regrows and is harvested
+    regrowths = 1 + (days // int(crop["regrowth_days"])) if crop["regrowth_days"] != "0" else 1
     
-    # Calcular los costos y ganancias
-    costo_total = precio_semillas * casillas
-    ganancia_total = (precio_venta * cantidad_cosechable * casillas * Recrecimientos)
-    beneficio_neto = ganancia_total - costo_total
+    # Calculate costs and profits
+    total_cost = seed_price * tiles
+    total_profit = sell_price * harvest_quantity * tiles * regrowths
+    net_profit = total_profit - total_cost
 
-    return costo_total, ganancia_total, beneficio_neto
+    return total_cost, total_profit, net_profit
 
-def calcular_dias_restantes(dia_actual):
-    return 28 - dia_actual
+def calculate_remaining_days(current_day):
+    return 28 - current_day
 
 def main():
     while True:
-        print("\n--- Stardew Valley: Calculadora de Cultivos ---")
-        temporada = input("Temporada (spring/summer/fall/winter): ").strip().lower()
-        dia_actual = int(input("Día (1-28): "))
-        año = int(input("Año: "))  # No se usa directamente ahora pero puede ser útil
+        print("\n--- Stardew Valley: Crop Calculator ---")
+        season = input("Season (spring/summer/fall/winter): ").strip().lower()
+        current_day = int(input("Day (1-28): "))
+        year = int(input("Year: "))  # Not used directly, but might be useful later
 
-        dias_restantes = calcular_dias_restantes(dia_actual)
-        print(f"Días restantes en la temporada: {dias_restantes}")
+        remaining_days = calculate_remaining_days(current_day)
+        print(f"Days remaining in the season: {remaining_days}")
 
-        cultivos_disponibles = filtrar_cultivos(temporada, dias_restantes)
+        available_crops = filter_crops(season, remaining_days)
 
-        if not cultivos_disponibles:
-            print("No hay cultivos disponibles para plantar en los días restantes.")
+        if not available_crops:
+            print("No crops are available to plant within the remaining days.")
             continue
 
-        mostrar_cultivos(cultivos_disponibles)
+        display_crops(available_crops)
         
-        seleccion = int(input("\nSelecciona un cultivo por número: ")) - 1
-        cultivo_seleccionado = cultivos_disponibles[seleccion]
+        selection = int(input("\nSelect a crop by number: ")) - 1
+        selected_crop = available_crops[selection]
         
-        print(f"\nHas seleccionado: {cultivo_seleccionado['nombre']}")
+        print(f"\nYou selected: {selected_crop['name']}")
         
-        casillas = int(input("¿Cuántas casillas deseas plantar?: "))
-        costo_total, ganancia_total, beneficio_neto = calcular_costos_y_ganancias(cultivo_seleccionado, casillas, dias_restantes)
+        tiles = int(input("How many tiles do you want to plant?: "))
+        total_cost, total_profit, net_profit = calculate_costs_and_profits(selected_crop, tiles, remaining_days)
         
-        print(f"\nResultados:")
-        print(f"Costo Total: {costo_total}g")
-        print(f"Ganancia Total: {ganancia_total}g")
-        print(f"Beneficio Neto: {beneficio_neto}g")
+        print(f"\nResults:")
+        print(f"Total Cost: {total_cost}g")
+        print(f"Total Profit: {total_profit}g")
+        print(f"Net Profit: {net_profit}g")
 
-        repetir = input("\n¿Quieres calcular otro cultivo? (sí/no): ").strip().lower()
-        if repetir != 'sí':
+        repeat = input("\nDo you want to calculate another crop? (yes/no): ").strip().lower()
+        if repeat != 'yes':
             break
 
 if __name__ == "__main__":
