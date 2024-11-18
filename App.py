@@ -9,9 +9,7 @@ def load_crops(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
 
-crops = load_crops('cultivos.json')
-
-def filter_crops(season, remaining_days):
+def filter_crops(crops, season, remaining_days):
     available = []
     for crop in crops:
         # Usa .get para manejar claves faltantes con un valor predeterminado
@@ -64,6 +62,7 @@ def calculate_costs_and_profits(crop, tiles, remaining_days):
 def calculate_remaining_days(current_day):
     return 28 - current_day
 
+#Main de prueba para testeos de algoritmos
 def main():
     ruta_archivo = "OT_378081712"
     raiz = cargar_datos_archivo(fr"{SAVES_DIR}\{ruta_archivo}\{ruta_archivo}")

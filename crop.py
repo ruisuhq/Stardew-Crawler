@@ -32,7 +32,7 @@ class Crop:
         # Usamos next con un valor por defecto "N/A" si no se encuentra la temporada
         self.season = next(
             (item.text.strip() for item in temporada if item and any(season in item.text for season in ["Summer", "Spring", "Fall", "Winter"])),
-            "N/A"
+            ""
         )
         
         return self.season
@@ -135,7 +135,7 @@ class Crop:
                             td_elements = first_tr.find_all("td")
                             if len(td_elements) > 1:
                                 self.sell_price = td_elements[1].get_text(strip=True)
-            return "N/A"
+            return "0"
         
         return self.sell_price
     
@@ -149,16 +149,16 @@ class Crop:
             if re.match(r"^\d+g$", precio):
                 self.seed_price = precio
             else: 
-                self.seed_price = "N/A"
+                self.seed_price = "0"
         elif precios:
             # Validar el primero si no hay suficientes elementos
             precio = precios[0].text.strip()
             if re.match(r"^\d+g$", precio):
                 self.seed_price = precio
             else:
-                self.seed_price = "N/A"
+                self.seed_price = "0"
 
-            return "N/A"
+            return "0"
 
         return self.seed_price
 

@@ -17,7 +17,7 @@
         "harvest_quantity": "1",
         "regrowth_days": "0",
         "sell_price": "35g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Cauliflower",
@@ -30,8 +30,7 @@
         "price_seed": "80g"
     },
     {
-        "nombre": "Coffee Bean",
-        "error": "'NoneType' object is not subscriptable"
+        "name": "Coffee Bean"
     },
     {
         "name": "Garlic",
@@ -231,7 +230,7 @@
         "harvest_quantity": "1",
         "regrowth_days": "3",
         "sell_price": "45g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Sunflower",
@@ -311,7 +310,7 @@
         "harvest_quantity": "1",
         "regrowth_days": "4",
         "sell_price": "70g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Cranberries",
@@ -344,8 +343,7 @@
         "price_seed": "200g"
     },
     {
-        "nombre": "Grape",
-        "error": "'NoneType' object has no attribute 'text'"
+        "name": "Grape"
     },
     {
         "name": "Pumpkin",
@@ -375,7 +373,7 @@
         "harvest_quantity": "1",
         "regrowth_days": "0",
         "sell_price": "60g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Ancient Fruit",
@@ -385,12 +383,12 @@
         "harvest_quantity": "1",
         "regrowth_days": "7",
         "sell_price": "550g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Cactus Fruit",
         "description": "The sweet fruit of the prickly pear cactus.",
-        "season": "N/A",
+        "season": "",
         "growth_time": "12 days",
         "harvest_quantity": "1",
         "regrowth_days": "3",
@@ -398,16 +396,13 @@
         "price_seed": "150g"
     },
     {
-        "nombre": "Fiber",
-        "error": "'NoneType' object has no attribute 'text'"
+        "name": "Fiber"
     },
     {
-        "nombre": "Mixed Flower Seeds",
-        "error": "'NoneType' object has no attribute 'text'"
+        "name": "Mixed Flower Seeds"
     },
     {
-        "nombre": "Mixed Seeds",
-        "error": "'NoneType' object has no attribute 'text'"
+        "name": "Mixed Seeds"
     },
     {
         "name": "Pineapple",
@@ -417,7 +412,7 @@
         "harvest_quantity": "2",
         "regrowth_days": "7",
         "sell_price": "300g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Taro Root",
@@ -427,7 +422,7 @@
         "harvest_quantity": "2",
         "regrowth_days": "0",
         "sell_price": "100g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     },
     {
         "name": "Sweet Gem Berry",
@@ -436,8 +431,8 @@
         "growth_time": "24 days",
         "harvest_quantity": "1",
         "regrowth_days": "0",
-        "sell_price": "N/A",
-        "price_seed": "N/A"
+        "sell_price": "0",
+        "price_seed": "0"
     },
     {
         "name": "Tea Leaves",
@@ -447,6 +442,6 @@
         "harvest_quantity": "1",
         "regrowth_days": "0",
         "sell_price": "50g",
-        "price_seed": "N/A"
+        "price_seed": "0"
     }
 ]

@@ -79,7 +79,7 @@ def exportJson(datos_cultivos):
             json.dump(datos_cultivos, f, ensure_ascii=False, indent=4)
     print("Datos exportados a cultivos.json")
 
-def main():
+def StardewCrawler():
     cultivos = obtener_enlaces_cultivos(START_URL)
     datos_cultivos = []
 
@@ -92,10 +92,7 @@ def main():
         except Exception as e:
             # Me da tok ver que hay errores q no son errores mb 
             # print(f"Error procesando {cultivo['nombre']}: {e}")
-            datos_cultivos.append({"nombre": cultivo['nombre'], "error": str(e)})
+            datos_cultivos.append({"name": cultivo['nombre']})
         
     # Exportar los datos como JSON
     exportJson(datos_cultivos)
-
-if __name__ == "__main__":
-    main()
