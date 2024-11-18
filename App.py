@@ -1,4 +1,9 @@
 import json
+from stardew_saves import *
+
+APPDATA_DIR = os.getenv('APPDATA')
+SAVES_DIR = fr"{APPDATA_DIR}\StardewValley\Saves"
+
 
 def load_crops(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -60,11 +65,14 @@ def calculate_remaining_days(current_day):
     return 28 - current_day
 
 def main():
+    ruta_archivo = "OT_378081712"
+    raiz = cargar_datos_archivo(fr"{SAVES_DIR}\{ruta_archivo}\{ruta_archivo}")
+
+    date = obtener_fecha_juego(raiz)
     while True:
-        print("\n--- Stardew Valley: Crop Calculator ---")
-        season = input("Season (spring/summer/fall/winter): ").strip().lower()
-        current_day = int(input("Day (1-28): "))
-        year = int(input("Year: "))  # Not used directly, but might be useful later
+        season = date[0]
+        current_day = int(date[1])
+        year = int(date[2])
 
         remaining_days = calculate_remaining_days(current_day)
         print(f"Days remaining in the season: {remaining_days}")
