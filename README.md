@@ -4,12 +4,13 @@
 
 Un proyecto diseñado para **Seguridad de la Información** y **Programación para Internet**, que permite a los jugadores de _Stardew Valley_ optimizar su experiencia. Nuestro objetivo principal fue desarrollar un pequeño _web crawler_ que extrae datos clave sobre cultivos desde el [Stardew Valley Wiki](https://stardewvalleywiki.com) para ayudar a identificar los cultivos más rentables según la temporada de forma personalizada para el usuario.
 
-[Video DEMO:](https://www.youtube.com/watch?v=u_0nsRo5s4E&authuser=0&hl=es)
+[Video DEMO](https://www.youtube.com/watch?v=u_0nsRo5s4E&authuser=0&hl=es)
 
-Miembros del equipo:
-Briceño Caguado, Luis Gerardo – 219473333
-Castañeda Serrano, Oscar – 218623986 
-Pinto Soriano, Emiliano Ramón – 219617335
+## Información del equipo
+
+- **Briceño Caguado, Luis Gerardo**: 219473333
+- **Castañeda Serrano, Oscar**: 218623986 
+- **Pinto Soriano, Emiliano Ramón**: 219617335
 
 ## 🚀 Funcionalidades
 
