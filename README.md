@@ -62,7 +62,7 @@ La aplicación incluye una GUI intuitiva, permitiendo a los jugadores interactua
   - Temporada ideal
   - Tiempo de crecimiento
   - Precio de venta
-  - Precio de semillas en la tienda de Pierre
+  - Precio de semillas en la tienda de Pierre.
 
 ### 3. **Datos Exportables**
 
